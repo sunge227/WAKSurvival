@@ -48,6 +48,9 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody myRigid;
 
+    // 현재 장착된 Hand형 타입 무기
+    [SerializeField]
+    private Hand currentHand;
 
     // Start is called before the first frame update
     void Start()
@@ -153,11 +156,14 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftShift))
         {
             Running();
+
         }
         if (Input.GetKeyUp(KeyCode.LeftShift))
         {
-            RunningCancel();
+            RunningCancel();            
         }
+
+        //currentHand.anim.SetBool("Run", isRun);
     }
 
     //달리기
@@ -166,7 +172,9 @@ public class PlayerController : MonoBehaviour
         //앉은 상태에서 점프시 앉은 상태 해제
         if (isCrouch) Crouch();
 
+
         isRun = true;
+
         applySpeed = runSpeed;
     }
 
@@ -211,7 +219,7 @@ public class PlayerController : MonoBehaviour
         float _xRotation = Input.GetAxisRaw("Mouse Y");
         float _cameraRotationX = _xRotation * lookSensitivity;
 
-        currentCameraRotationX += _cameraRotationX;
+        currentCameraRotationX -= _cameraRotationX;
         currentCameraRotationX = Mathf.Clamp(currentCameraRotationX, -cameraRotationLimit, cameraRotationLimit);
 
         theCamera.transform.localEulerAngles = new Vector3(currentCameraRotationX, 0f, 0f);
