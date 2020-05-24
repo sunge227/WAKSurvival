@@ -45,8 +45,9 @@ public class PlayerController : MonoBehaviour
     //필요한 컴포넌트
     [SerializeField]
     private Camera theCamera;
-
     private Rigidbody myRigid;
+    
+    private GunController theGunController;
 
     // 현재 장착된 Hand형 타입 무기
     [SerializeField]
@@ -58,6 +59,7 @@ public class PlayerController : MonoBehaviour
         capsuleCollider = GetComponent<CapsuleCollider>();
         myRigid = GetComponent<Rigidbody>();
         applySpeed = walkSpeed;
+        theGunController = FindObjectOfType<GunController>();
 
         // 초기화
         originPosY = theCamera.transform.localPosition.y;
@@ -163,7 +165,7 @@ public class PlayerController : MonoBehaviour
             RunningCancel();            
         }
 
-        //currentHand.anim.SetBool("Run", isRun);
+
     }
 
     //달리기
@@ -172,10 +174,13 @@ public class PlayerController : MonoBehaviour
         //앉은 상태에서 점프시 앉은 상태 해제
         if (isCrouch) Crouch();
 
+        theGunController.CancelFineSight();
 
         isRun = true;
 
         applySpeed = runSpeed;
+
+        //currentHand.anim.SetBool("Run", !isRun);
     }
 
     //달리기 취소
@@ -183,6 +188,7 @@ public class PlayerController : MonoBehaviour
     {
         isRun = false;
         applySpeed = walkSpeed;
+
     }
 
     //움직임 실행
