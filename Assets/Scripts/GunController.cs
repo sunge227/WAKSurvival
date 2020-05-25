@@ -4,22 +4,39 @@ using UnityEngine;
 
 public class GunController : MonoBehaviour
 {
+    //현재 장착된 총
     [SerializeField]
     private Gun currentGun;
 
+    // 연사 속도 계산
     private float currentFireRate;
-
+    // 상태 변수
     private bool isReload = false;
-    private bool isFineSightMode = false;
+
+    [HideInInspector]
+    public bool isFineSightMode = false;
 
     // 본래 포지션 값
     [SerializeField]
     private Vector3 originPos;
 
+    //효과음
     private AudioSource audioSource;
+
+    //레이저 충돌 정보 받아옴.
+    private RaycastHit hitInfo;
+
+    //필요한 컴포넌트
+    [SerializeField]
+    private Camera theCam;
+
+    //피격 이펙트
+    [SerializeField]
+    private GameObject hit_effect_prefab;
 
     private void Start()
     {
+        originPos = Vector3.zero;
         audioSource = GetComponent<AudioSource>();
     }
     // Update is called once per frame
@@ -31,6 +48,7 @@ public class GunController : MonoBehaviour
         TryFineSight();
     }
 
+    //연사속도 재계산
     private void GunFireRateCalc()
     {
         if (currentFireRate > 0)
@@ -39,7 +57,7 @@ public class GunController : MonoBehaviour
 
         }
     }
-
+    //발사시도
     private void TryFire()
     {
         if (Input.GetButton("Fire1") && currentFireRate <= 0 && !isReload)
@@ -47,7 +65,7 @@ public class GunController : MonoBehaviour
             Fire();
         }
     }
-
+    // 발사 전 계산
     private void Fire()
     {
         if (!isReload)
@@ -63,7 +81,7 @@ public class GunController : MonoBehaviour
 
         }
     }
-
+    // 발사 후 계산
     private void Shoot()
     {
         currentGun.currentBulletCount--;
@@ -71,14 +89,24 @@ public class GunController : MonoBehaviour
         PlaySE(currentGun.fire_Sound);
         currentGun.muzzleFlash.Play();
 
+        Hit();
+
         StopAllCoroutines();
         // 총기 반동 코루틴 실행
         StartCoroutine(RetroActionCoroutine());
 
-        Debug.Log("발사");
-
     }
 
+    private void Hit()
+    {
+        if (Physics.Raycast(theCam.transform.position,theCam.transform.forward,out hitInfo,currentGun.range))
+        {
+            GameObject clone = Instantiate(hit_effect_prefab,hitInfo.point,Quaternion.LookRotation(hitInfo.normal));
+            Destroy(clone, 2f);
+        }
+    }
+
+    //재장전 시도
     private void TryReload()
     {
         if (Input.GetKeyDown(KeyCode.R) && !isReload && currentGun.currentBulletCount < currentGun.reloadBulletCount)
@@ -87,6 +115,8 @@ public class GunController : MonoBehaviour
             StartCoroutine(ReloadCoroutine());
         }
     }
+
+    //재장전
     IEnumerator ReloadCoroutine()
     {
         if (currentGun.carryBulletCount > 0)
@@ -118,6 +148,7 @@ public class GunController : MonoBehaviour
             Debug.Log(" 소유한 총알이 없습니다.");
         }
     }
+    //정조준 시도
     private void TryFineSight()
     {
         if (Input.GetButtonDown("Fire2") && !isReload)
@@ -125,12 +156,14 @@ public class GunController : MonoBehaviour
             FineSight();
         }
     }
-
+    // 정조준 취소
     public void CancelFineSight()
     {
         if (isFineSightMode)
             FineSight();
     }
+
+    //정조준 로직 
     private void FineSight()
     {
         isFineSightMode = !isFineSightMode;
@@ -148,6 +181,7 @@ public class GunController : MonoBehaviour
         }
     }
 
+    // 정조준 활성화
     IEnumerator FineSightActivateCoroutine()
     {
         while(currentGun.transform.localPosition != currentGun.fineSightOriginPos)
@@ -157,6 +191,7 @@ public class GunController : MonoBehaviour
             yield return null;
         }
     }
+    //정조준 비활성화
     IEnumerator FineSightDeactivateCoroutine()
     {
         while (currentGun.transform.localPosition != originPos)
@@ -166,7 +201,7 @@ public class GunController : MonoBehaviour
             yield return null;
         }
     }
-
+    // 반동 
     IEnumerator RetroActionCoroutine()
     {
         Vector3 recoilBack = new Vector3(currentGun.retroActionForce, originPos.y, originPos.z);
@@ -209,11 +244,16 @@ public class GunController : MonoBehaviour
             }
         }
     }
+
+    //사운드 재생
     private void PlaySE(AudioClip _clip)
     {
         audioSource.clip = _clip;
         audioSource.Play();
     }
 
-
+    public Gun GetGun()
+    {
+        return currentGun;
+    }
 }
