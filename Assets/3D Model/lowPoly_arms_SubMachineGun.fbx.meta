@@ -88,7 +88,7 @@ ModelImporter:
       name: Gun0_Run
       takeName: Armature|ArmatureAction
       internalID: 0
-      firstFrame: 54
+      firstFrame: 60
       lastFrame: 70
       wrapMode: 0
       orientationOffsetY: 0

@@ -64,6 +64,7 @@ public class PlayerController : MonoBehaviour
         myRigid = GetComponent<Rigidbody>();
         theGunController = FindObjectOfType<GunController>();
         theCrossHair = FindObjectOfType<CrossHair>();
+        
 
         // 초기화
         applySpeed = walkSpeed;
@@ -140,7 +141,7 @@ public class PlayerController : MonoBehaviour
     private void IsGround()
     {
         isGround = Physics.Raycast(transform.position,Vector3.down,capsuleCollider.bounds.extents.y + 0.1f);
-        theCrossHair.RunningAnimation(!isGround);
+        theCrossHair.JumpingAnimation(!isGround);
     }
 
     // 점프 시도
