@@ -55,7 +55,7 @@ public class PlayerController : MonoBehaviour
 
     // 현재 장착된 Hand형 타입 무기
     [SerializeField]
-    private Hand currentHand;
+    private CloseWeapon currentHand;
 
     // Start is called before the first frame update
     void Start()

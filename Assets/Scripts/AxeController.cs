@@ -2,18 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HandController : closeWeaponController
+public class AxeController : closeWeaponController
 {
     // 활성화 여부
     public static bool isActivate = false;
 
+    /*private void Start()
+    {
+        WeaponManager.currentWeapon = currentCloseWeapon.GetComponent<Transform>();
+        WeaponManager.currentWeaponAnim = currentCloseWeapon.anim;
+    }*/
     // Update is called once per frame
     void Update()
     {
         if (isActivate)
             TryAttack();
-    }
 
+    }
     protected override IEnumerator HitCoroutine()
     {
         while (isSwing)
