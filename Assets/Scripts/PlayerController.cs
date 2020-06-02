@@ -52,6 +52,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody myRigid;
     private CrossHair theCrossHair;
     private GunController theGunController;
+    private StatusController theStatusController;
 
     // 현재 장착된 Hand형 타입 무기
     [SerializeField]
@@ -64,7 +65,8 @@ public class PlayerController : MonoBehaviour
         myRigid = GetComponent<Rigidbody>();
         theGunController = FindObjectOfType<GunController>();
         theCrossHair = FindObjectOfType<CrossHair>();
-        
+        theStatusController = FindObjectOfType<StatusController>();
+
 
         // 초기화
         applySpeed = walkSpeed;
@@ -159,6 +161,8 @@ public class PlayerController : MonoBehaviour
         //앉은 상태에서 점프시 앉은 상태 해제
         if (isCrouch) Crouch();
 
+        theStatusController.DecreaseStamina(100);
+
         myRigid.velocity = transform.up * jumpForce;
     }
 
@@ -189,6 +193,9 @@ public class PlayerController : MonoBehaviour
         isRun = true;
 
         theCrossHair.RunningAnimation(isRun);
+
+
+        theStatusController.DecreaseStamina(10);
 
         applySpeed = runSpeed;
 
