@@ -156,6 +156,13 @@ public class StatusController : MonoBehaviour
         else
             currentHp = hp;
     }
+    public void IncreaseSP(int _count)
+    {
+        if (currentSp + _count < sp)
+            currentSp += _count;
+        else
+            currentSp = sp;
+    }
     public void DecreaseHP(int _count)
     {
         //체력 전에 방어력 먼저 감소
