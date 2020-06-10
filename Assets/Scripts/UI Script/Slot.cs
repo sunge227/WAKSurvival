@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class Slot : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
+public class Slot : MonoBehaviour,IPointerEnterHandler,IPointerExitHandler, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
     public Item item; //획득한 아이템
     public int itemCount; // 획득한 아이템의 개수
@@ -135,5 +135,17 @@ public class Slot : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDra
             DragSlot.instance.dragSlot.AddItem(_tempItem, _tempItemCount);
         else
             DragSlot.instance.dragSlot.ClearSlot();
+    }
+
+    //마우스가 슬롯에 들어갈때 발동
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if(item != null)
+            theItemEffectDatabase.ShowToolTip(item,transform.position);
+    }
+    //마우스가 슬롯에서 빠져나갈 때 발동
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        theItemEffectDatabase.HideToolTip();
     }
 }
